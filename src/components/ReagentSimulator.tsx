@@ -121,11 +121,11 @@ const ReagentSimulator = () => {
                 className="gap-2"
               >
                 {userGuess === substance.id && showResults && (
-                  {currentSubstance?.id === substance.id ? (
+                  currentSubstance?.id === substance.id ? (
                     <CheckCircle className="h-4 w-4 text-green-500" />
                   ) : (
                     <XCircle className="h-4 w-4 text-red-500" />
-                  )}
+                  )
                 )}
                 {substance.name}
               </Button>
