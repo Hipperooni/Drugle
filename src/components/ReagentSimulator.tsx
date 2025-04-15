@@ -151,13 +151,14 @@ const ReagentSimulator = () => {
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="p-4">
             <h2 className="text-lg font-semibold mb-4">Available Reagents</h2>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {reagents.map(reagent => (
                 <Button
                   key={reagent.id}
                   variant={selectedReagents.includes(reagent.id) ? "default" : "outline"}
                   className="gap-2"
                   onClick={() => toggleReagent(reagent.id)}
+                  title={reagent.description}
                 >
                   <BeakerIcon className="h-4 w-4" />
                   {reagent.name}
@@ -168,7 +169,7 @@ const ReagentSimulator = () => {
 
           <Card className="p-4">
             <h2 className="text-lg font-semibold mb-4">Test Results</h2>
-            <ScrollArea className="h-[200px] rounded-md border p-4">
+            <ScrollArea className="h-[300px] rounded-md border p-4">
               {selectedReagents.map(reagentId => {
                 const reagent = reagents.find(r => r.id === reagentId);
                 const result = currentSubstance?.reactions[reagentId];
