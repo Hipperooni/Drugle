@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
-import { BeakerIcon, RefreshCw, CheckCircle, XCircle, Shuffle } from "lucide-react";
+import { BeakerIcon, RefreshCw, CheckCircle, XCircle, Shuffle, PaletteIcon } from "lucide-react";
 import { reagents, substances } from "@/data/testData";
 import { Substance } from "@/types/reagent";
 import {
@@ -13,6 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const ReagentSimulator = () => {
   const { toast } = useToast();
@@ -21,6 +28,7 @@ const ReagentSimulator = () => {
   const [showResults, setShowResults] = useState(false);
   const [userGuess, setUserGuess] = useState<string>("");
   const [isRandom, setIsRandom] = useState(true);
+  const [showColorChart, setShowColorChart] = useState(false);
 
   const randomizeSubstance = () => {
     const randomIndex = Math.floor(Math.random() * substances.length);
@@ -84,8 +92,30 @@ const ReagentSimulator = () => {
     <div className="container mx-auto p-4 max-w-4xl">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-4">
-          <h1 className="text-2xl font-bold text-purple-900">Reagent Test Kit Simulator</h1>
-          
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold text-purple-900">Reagent Test Kit Simulator</h1>
+            <Dialog open={showColorChart} onOpenChange={setShowColorChart}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <PaletteIcon className="h-4 w-4" />
+                  Color Chart
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl w-full">
+                <DialogHeader>
+                  <DialogTitle>Reagent Color Chart</DialogTitle>
+                </DialogHeader>
+                <div className="w-full">
+                  <img 
+                    src="https://landmarkrecovery.com/wp-content/uploads/2022/09/2022-color-chart-1-1536x966.png" 
+                    alt="Reagent Color Chart" 
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
+
           <Card className="p-4">
             <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
               <Select
@@ -119,7 +149,6 @@ const ReagentSimulator = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {/* Reagent Selection */}
           <Card className="p-4">
             <h2 className="text-lg font-semibold mb-4">Available Reagents</h2>
             <div className="grid grid-cols-2 gap-2">
@@ -137,7 +166,6 @@ const ReagentSimulator = () => {
             </div>
           </Card>
 
-          {/* Results Display */}
           <Card className="p-4">
             <h2 className="text-lg font-semibold mb-4">Test Results</h2>
             <ScrollArea className="h-[200px] rounded-md border p-4">
@@ -155,7 +183,6 @@ const ReagentSimulator = () => {
           </Card>
         </div>
 
-        {/* Substance Selection */}
         <Card className="p-4">
           <h2 className="text-lg font-semibold mb-4">Make Your Analysis</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
