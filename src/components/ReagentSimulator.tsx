@@ -1,12 +1,18 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/components/ui/use-toast";
-import { BeakerIcon, RefreshCw, CheckCircle, XCircle } from "lucide-react";
+import { BeakerIcon, RefreshCw, CheckCircle, XCircle, Shuffle } from "lucide-react";
 import { reagents, substances } from "@/data/testData";
 import { Substance } from "@/types/reagent";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ReagentSimulator = () => {
   const { toast } = useToast();
@@ -14,6 +20,7 @@ const ReagentSimulator = () => {
   const [selectedReagents, setSelectedReagents] = useState<string[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [userGuess, setUserGuess] = useState<string>("");
+  const [isRandom, setIsRandom] = useState(true);
 
   const randomizeSubstance = () => {
     const randomIndex = Math.floor(Math.random() * substances.length);
@@ -21,6 +28,18 @@ const ReagentSimulator = () => {
     setSelectedReagents([]);
     setShowResults(false);
     setUserGuess("");
+    setIsRandom(true);
+  };
+
+  const handleSubstanceSelect = (substanceId: string) => {
+    const substance = substances.find(s => s.id === substanceId);
+    if (substance) {
+      setCurrentSubstance(substance);
+      setSelectedReagents([]);
+      setShowResults(false);
+      setUserGuess("");
+      setIsRandom(false);
+    }
   };
 
   useEffect(() => {
@@ -64,12 +83,39 @@ const ReagentSimulator = () => {
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <div className="flex flex-col gap-6">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-bold text-purple-900">Reagent Test Kit Simulator</h1>
-          <Button onClick={randomizeSubstance} variant="outline" className="gap-2">
-            <RefreshCw className="h-4 w-4" />
-            New Sample
-          </Button>
+          
+          <Card className="p-4">
+            <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+              <Select
+                value={currentSubstance?.id || ""}
+                onValueChange={handleSubstanceSelect}
+              >
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Select substance to test" />
+                </SelectTrigger>
+                <SelectContent>
+                  {substances.map((substance) => (
+                    <SelectItem key={substance.id} value={substance.id}>
+                      {substance.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              
+              <Button onClick={randomizeSubstance} variant="outline" className="gap-2">
+                <Shuffle className="h-4 w-4" />
+                Random Sample
+              </Button>
+              
+              {!isRandom && (
+                <p className="text-sm text-muted-foreground">
+                  Testing: {currentSubstance?.name}
+                </p>
+              )}
+            </div>
+          </Card>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
