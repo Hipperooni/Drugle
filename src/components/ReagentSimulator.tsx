@@ -24,15 +24,51 @@ import {
 const ReagentSimulator = () => {
   const { toast } = useToast();
   const [currentSubstance, setCurrentSubstance] = useState<Substance | null>(null);
+  const [actualSubstance, setActualSubstance] = useState<Substance | null>(null);
   const [selectedReagents, setSelectedReagents] = useState<string[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [userGuess, setUserGuess] = useState<string>("");
   const [isRandom, setIsRandom] = useState(true);
   const [showColorChart, setShowColorChart] = useState(false);
 
-  const randomizeSubstance = () => {
+  const getRandomSubstance = () => {
     const randomIndex = Math.floor(Math.random() * substances.length);
-    setCurrentSubstance(substances[randomIndex]);
+    return substances[randomIndex];
+  };
+
+  const getSimilarSubstances = (substance: Substance) => {
+    return substances.filter(s => {
+      if (s.id === substance.id) return false;
+      let similarReactions = 0;
+      Object.keys(s.reactions).forEach(reagentId => {
+        if (s.reactions[reagentId] === substance.reactions[reagentId]) {
+          similarReactions++;
+        }
+      });
+      return similarReactions >= 2;
+    });
+  };
+
+  const randomizeSubstance = () => {
+    const selectedSubstance = getRandomSubstance();
+    
+    const shouldShowDifferent = Math.random() < 0.5;
+    
+    if (shouldShowDifferent) {
+      const similarSubstances = getSimilarSubstances(selectedSubstance);
+      if (similarSubstances.length > 0) {
+        const randomSimilar = similarSubstances[Math.floor(Math.random() * similarSubstances.length)];
+        setActualSubstance(randomSimilar);
+        setCurrentSubstance(selectedSubstance);
+      } else {
+        setActualSubstance(selectedSubstance);
+        setCurrentSubstance(selectedSubstance);
+      }
+    } else {
+      setActualSubstance(selectedSubstance);
+      setCurrentSubstance(selectedSubstance);
+    }
+    
     setSelectedReagents([]);
     setShowResults(false);
     setUserGuess("");
@@ -40,9 +76,25 @@ const ReagentSimulator = () => {
   };
 
   const handleSubstanceSelect = (substanceId: string) => {
-    const substance = substances.find(s => s.id === substanceId);
-    if (substance) {
-      setCurrentSubstance(substance);
+    const selectedSubstance = substances.find(s => s.id === substanceId);
+    if (selectedSubstance) {
+      const shouldShowDifferent = Math.random() < 0.5;
+      
+      if (shouldShowDifferent) {
+        const similarSubstances = getSimilarSubstances(selectedSubstance);
+        if (similarSubstances.length > 0) {
+          const randomSimilar = similarSubstances[Math.floor(Math.random() * similarSubstances.length)];
+          setActualSubstance(randomSimilar);
+          setCurrentSubstance(selectedSubstance);
+        } else {
+          setActualSubstance(selectedSubstance);
+          setCurrentSubstance(selectedSubstance);
+        }
+      } else {
+        setActualSubstance(selectedSubstance);
+        setCurrentSubstance(selectedSubstance);
+      }
+      
       setSelectedReagents([]);
       setShowResults(false);
       setUserGuess("");
@@ -73,7 +125,7 @@ const ReagentSimulator = () => {
     }
     setShowResults(true);
     
-    if (userGuess === currentSubstance?.id) {
+    if (userGuess === actualSubstance?.id) {
       toast({
         title: "Correct!",
         description: "Your analysis was accurate!",
@@ -82,7 +134,7 @@ const ReagentSimulator = () => {
     } else {
       toast({
         title: "Incorrect",
-        description: `The substance was ${currentSubstance?.name}`,
+        description: `The substance was ${actualSubstance?.name}`,
         variant: "destructive",
       });
     }
@@ -94,26 +146,32 @@ const ReagentSimulator = () => {
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold text-purple-900">Reagent Test Kit Simulator</h1>
-            <Dialog open={showColorChart} onOpenChange={setShowColorChart}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2">
-                  <PaletteIcon className="h-4 w-4" />
-                  Color Chart
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-4xl w-full">
-                <DialogHeader>
-                  <DialogTitle>Reagent Color Chart</DialogTitle>
-                </DialogHeader>
-                <div className="w-full">
-                  <img 
-                    src="https://landmarkrecovery.com/wp-content/uploads/2022/09/2022-color-chart-1-1536x966.png" 
-                    alt="Reagent Color Chart" 
-                    className="w-full h-auto object-contain"
-                  />
-                </div>
-              </DialogContent>
-            </Dialog>
+            <div className="flex gap-2">
+              <Dialog open={showColorChart} onOpenChange={setShowColorChart}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    <PaletteIcon className="h-4 w-4" />
+                    Color Chart
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl w-full">
+                  <DialogHeader>
+                    <DialogTitle>Reagent Color Chart</DialogTitle>
+                  </DialogHeader>
+                  <div className="w-full">
+                    <img 
+                      src="https://landmarkrecovery.com/wp-content/uploads/2022/09/2022-color-chart-1-1536x966.png" 
+                      alt="Reagent Color Chart" 
+                      className="w-full h-auto object-contain"
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
+              <Button onClick={randomizeSubstance} variant="outline" className="gap-2">
+                <RefreshCw className="h-4 w-4" />
+                New Sample
+              </Button>
+            </div>
           </div>
 
           <Card className="p-4">
