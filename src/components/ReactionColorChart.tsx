@@ -34,6 +34,17 @@ const ReactionColorChart = () => {
       Brown: "#78350f",
       Black: "#111827",
       White: "#f3f4f6",
+      Pink: "#db2777",
+      LightYellow: "#facc15",
+      LightGreen: "#4ade80",
+      LightPurple: "#a855f7",
+      Navy: "#1e40af",
+      Olive: "#4d7c0f",
+      Violet: "#7c3aed",
+      DarkRed: "#991b1b",
+      DarkPurple: "#581c87",
+      LightBrown: "#a16207",
+      Tan: "#d2b48c",
     };
   
     // Convert color names to hex codes

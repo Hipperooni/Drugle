@@ -60,9 +60,9 @@ export const substances: Substance[] = [
       liebermann: "Black",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Blue → Black",
-      mecke: "Green → Blue → Black",
-      folin: "Blue"
+      mandelin: "Black",
+      mecke: "Green → Black",
+      folin: "Pink"
     }
   },
   {
@@ -75,54 +75,39 @@ export const substances: Substance[] = [
       liebermann: "Black",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Blue → Black",
-      mecke: "Green → Blue → Black",
-      folin: "Blue"
+      mandelin: "Black",
+      mecke: "Green → Black",
+      folin: "Yellow"
     }
   },
   {
     id: "5apb",
     name: "5-APB/6-APB",
     reactions: {
-      marquis: "Purple → Brown",
-      simons: "No reaction",
-      froehde: "Purple → Brown",
-      liebermann: "Brown",
-      morris: "No reaction",
-      ehrlich: "No reaction",
-      mandelin: "Green → Black",
-      mecke: "Dark Blue",
-      folin: "Blue"
-    }
-  },
-  {
-    id: "5mapb",
-    name: "5-MAPB/6-MAPB",
-    reactions: {
-      marquis: "Purple → Brown",
+      marquis: "Black",
       simons: "Blue",
-      froehde: "Purple → Brown",
-      liebermann: "Brown",
+      froehde: "Black",
+      liebermann: "Black",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Green → Black",
-      mecke: "Dark Blue",
-      folin: "Blue"
+      mandelin: "Black",
+      mecke: "Blue",
+      folin: "Tan"
     }
   },
   {
     id: "methamphetamine",
     name: "Methamphetamine",
     reactions: {
-      marquis: "Orange → Brown",
+      marquis: "Orange",
       simons: "Blue",
-      froehde: "Yellow → Brown",
-      liebermann: "Yellow → Brown",
+      froehde: "No reaction",
+      liebermann: "Orange",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Orange → Brown",
-      mecke: "Green → Brown",
-      folin: "Orange"
+      mandelin: "Green",
+      mecke: "Black",
+      folin: "Pink"
     }
   },
   {
@@ -131,28 +116,28 @@ export const substances: Substance[] = [
     reactions: {
       marquis: "Orange",
       simons: "No reaction",
-      froehde: "Yellow",
-      liebermann: "Yellow",
+      froehde: "No reaction",
+      liebermann: "Orange",
       morris: "No reaction",
       ehrlich: "No reaction",
       mandelin: "Green",
-      mecke: "Brown",
-      folin: "Orange"
+      mecke: "Black",
+      folin: "Tan"
     }
   },
   {
     id: "methylone",
     name: "Methylone",
     reactions: {
-      marquis: "Yellow → Brown",
+      marquis: "Yellow",
       simons: "Blue",
-      froehde: "Yellow",
-      liebermann: "Yellow → Brown",
+      froehde: "Yellow → Green",
+      liebermann: "Green → Black",
       morris: "No reaction",
       ehrlich: "No reaction",
       mandelin: "Yellow → Brown",
-      mecke: "Yellow → Green",
-      folin: "Orange"
+      mecke: "Yellow → Brown",
+      folin: "No reaction"
     }
   },
   {
@@ -161,27 +146,27 @@ export const substances: Substance[] = [
     reactions: {
       marquis: "Yellow",
       simons: "Blue",
-      froehde: "No reaction",
-      liebermann: "Yellow",
+      froehde: "Yellow",
+      liebermann: "No reaction",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Yellow",
-      mecke: "Yellow",
-      folin: "Orange"
+      mandelin: "Green → Brown",
+      mecke: "Yellow → Brown",
+      folin: "No reaction"
     }
   },
   {
     id: "mephedrone",
     name: "Mephedrone",
     reactions: {
-      marquis: "Yellow",
+      marquis: "No reaction",
       simons: "Blue",
       froehde: "No reaction",
       liebermann: "Yellow",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Yellow",
-      mecke: "No reaction",
+      mandelin: "Light Brown",
+      mecke: "Light Brown",
       folin: "No reaction"
     }
   },
@@ -190,14 +175,14 @@ export const substances: Substance[] = [
     name: "Alpha-PVP",
     reactions: {
       marquis: "No reaction",
-      simons: "Blue",
+      simons: "No reaction",
       froehde: "No reaction",
-      liebermann: "No reaction",
+      liebermann: "Light Yellow",
       morris: "No reaction",
       ehrlich: "No reaction",
       mandelin: "No reaction",
       mecke: "No reaction",
-      folin: "No reaction"
+      folin: "Tan"
     }
   },
   {
@@ -207,10 +192,10 @@ export const substances: Substance[] = [
       marquis: "No reaction",
       simons: "No reaction",
       froehde: "No reaction",
-      liebermann: "Orange → Yellow",
+      liebermann: "Yellow",
       morris: "Blue",
       ehrlich: "No reaction",
-      mandelin: "White → Yellow",
+      mandelin: "Orange",
       mecke: "No reaction",
       folin: "No reaction"
     }
@@ -222,10 +207,10 @@ export const substances: Substance[] = [
       marquis: "No reaction",
       simons: "No reaction",
       froehde: "No reaction",
-      liebermann: "No reaction",
-      morris: "Orange",
+      liebermann: "Light Yellow",
+      morris: "Purple",
       ehrlich: "No reaction",
-      mandelin: "Orange",
+      mandelin: "Brown",
       mecke: "No reaction",
       folin: "No reaction"
     }
@@ -238,9 +223,9 @@ export const substances: Substance[] = [
       simons: "No reaction",
       froehde: "No reaction",
       liebermann: "No reaction",
-      morris: "Orange",
+      morris: "Navy",
       ehrlich: "No reaction",
-      mandelin: "Yellow → Orange",
+      mandelin: "No reaction",
       mecke: "No reaction",
       folin: "No reaction"
     }
@@ -249,29 +234,29 @@ export const substances: Substance[] = [
     id: "2cb",
     name: "2C-B",
     reactions: {
-      marquis: "Green → Blue",
+      marquis: "Yellow → Green",
       simons: "No reaction",
-      froehde: "Green",
-      liebermann: "Brown",
+      froehde: "Yellow",
+      liebermann: "Yellow → Black",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Green",
-      mecke: "Yellow → Green",
-      folin: "No reaction"
+      mandelin: "Light Green",
+      mecke: "Brown",
+      folin: "White"
     }
   },
   {
     id: "2ci",
     name: "2C-I",
     reactions: {
-      marquis: "Green",
+      marquis: "Yellow → Green → Blue",
       simons: "No reaction",
       froehde: "Green",
-      liebermann: "Brown",
+      liebermann: "Yellow → Black",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Green",
-      mecke: "Dark Green",
+      mandelin: "Brown",
+      mecke: "Brown",
       folin: "No reaction"
     }
   },
@@ -281,12 +266,12 @@ export const substances: Substance[] = [
     reactions: {
       marquis: "Orange",
       simons: "No reaction",
-      froehde: "Yellow",
-      liebermann: "Brown",
+      froehde: "Yellow → Brown",
+      liebermann: "Yellow → Black",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Orange",
-      mecke: "Olive",
+      mandelin: "Brown",
+      mecke: "Brown",
       folin: "No reaction"
     }
   },
@@ -306,21 +291,6 @@ export const substances: Substance[] = [
     }
   },
   {
-    id: "bzp",
-    name: "BZP",
-    reactions: {
-      marquis: "No reaction",
-      simons: "No reaction",
-      froehde: "No reaction",
-      liebermann: "Yellow",
-      morris: "No reaction",
-      ehrlich: "No reaction",
-      mandelin: "Yellow",
-      mecke: "No reaction",
-      folin: "No reaction"
-    }
-  },
-  {
     id: "tfmpp",
     name: "TFMPP",
     reactions: {
@@ -332,51 +302,51 @@ export const substances: Substance[] = [
       ehrlich: "No reaction",
       mandelin: "Yellow",
       mecke: "No reaction",
-      folin: "No reaction"
+      folin: "Red"
     }
   },
   {
     id: "pma",
     name: "PMA",
     reactions: {
-      marquis: "Orange → Brown",
+      marquis: "No reaction",
       simons: "No reaction",
-      froehde: "Yellow",
-      liebermann: "Yellow → Brown",
+      froehde: "Light Green",
+      liebermann: "Purple → Brown",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Brown",
-      mecke: "Green → Brown",
-      folin: "Orange"
+      mandelin: "Green → Brown",
+      mecke: "No reaction",
+      folin: "Tan"
     }
   },
   {
     id: "pmma",
     name: "PMMA",
     reactions: {
-      marquis: "Orange → Brown",
+      marquis: "No reaction",
       simons: "Blue",
-      froehde: "Yellow",
-      liebermann: "Yellow → Brown",
+      froehde: "Light Green",
+      liebermann: "Purple → Brown",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Brown",
-      mecke: "Green → Brown",
-      folin: "Orange"
+      mandelin: "Green → Brown",
+      mecke: "No reaction",
+      folin: "Pink"
     }
   },
   {
     id: "oxycodone",
     name: "Oxycodone",
     reactions: {
-      marquis: "Purple → Violet",
+      marquis: "Light Purple",
       simons: "No reaction",
-      froehde: "Purple → Violet",
-      liebermann: "Brown",
+      froehde: "Yellow",
+      liebermann: "No reaction",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Green → Blue",
-      mecke: "Green → Blue",
+      mandelin: "Green → Olive",
+      mecke: "Light Brown",
       folin: "No reaction"
     }
   },
@@ -384,14 +354,14 @@ export const substances: Substance[] = [
     id: "heroin",
     name: "Heroin",
     reactions: {
-      marquis: "Purple → Violet",
+      marquis: "Dark Red",
       simons: "No reaction",
-      froehde: "Purple → Green",
-      liebermann: "Purple → Brown",
+      froehde: "Dark Purple",
+      liebermann: "Black",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "Green → Blue",
-      mecke: "Blue → Dark blue",
+      mandelin: "Brown",
+      mecke: "Green",
       folin: "No reaction"
     }
   },
@@ -399,13 +369,13 @@ export const substances: Substance[] = [
     id: "aspirin",
     name: "Aspirin",
     reactions: {
-      marquis: "No reaction",
+      marquis: "Red",
       simons: "No reaction",
-      froehde: "No reaction",
-      liebermann: "No reaction",
+      froehde: "Violet",
+      liebermann: "Brown",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "No reaction",
+      mandelin: "Black",
       mecke: "No reaction",
       folin: "No reaction"
     }
@@ -414,14 +384,14 @@ export const substances: Substance[] = [
     id: "sugar",
     name: "Sugar",
     reactions: {
-      marquis: "No reaction",
+      marquis: "Yellow → Brown",
       simons: "No reaction",
-      froehde: "No reaction",
-      liebermann: "No reaction",
+      froehde: "Light Brown",
+      liebermann: "White",
       morris: "No reaction",
       ehrlich: "No reaction",
-      mandelin: "No reaction",
-      mecke: "No reaction",
+      mandelin: "Brown",
+      mecke: "Yellow → Black",
       folin: "No reaction"
     }
   }
