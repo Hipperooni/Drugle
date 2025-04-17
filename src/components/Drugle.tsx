@@ -204,9 +204,9 @@ const Drugle = () => {
     const resultEmojis = guesses.map(guess => {
       const matches = guess.results.map(r => {
         switch (r.match) {
-          case "exact": return "🟢";
-          case "present": return "🟡";
-          case "absent": return "⚫";
+          case "exact": return "🟩";
+          case "present": return "🟨";
+          case "absent": return "⬛";
         }
       });
       
@@ -487,8 +487,19 @@ const Drugle = () => {
             <h3 className="font-semibold">Disclaimer</h3>
           </div>
           <p className="text-sm text-gray-400">
-            THIS IS FOR ENTERTAINMENT PURPOSES ONLY. THE COLOUR CHART MAY NOT BE ACCURATE OR UP TO DATE 
-            AND NOTHING ON THIS PAGE SHOULD BE USED AS A FACTUAL REFERENCE FOR SUBSTANCE IDENTIFICATION.
+            <span>
+              THIS IS FOR ENTERTAINMENT PURPOSES ONLY. THE COLOUR CHART MAY NOT BE ACCURATE. NOTHING ON THIS PAGE SHOULD BE USED AS A REFERENCE FOR SUBSTANCE IDENTIFICATION.
+            </span>
+            <span className="ml-1">
+              <a
+                href="https://dancesafe.org/testing-kit-instructions/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 underline hover:text-blue-300"
+              >
+                For up-to-date information on reagents click here.
+              </a>
+            </span>
           </p>
         </div>
       </footer>
@@ -507,9 +518,9 @@ const Drugle = () => {
               <div className="space-y-2">
                 <h3 className="font-semibold text-gray-200">Rules:</h3>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>The game selects a random substance and uses all available reagent tests.</li>
+                  <li>The game selects a random substance.</li>
                   <li>Your goal is to guess the substance in {MAX_ATTEMPTS} or fewer attempts.</li>
-                  <li>After each guess, you'll see how your substance's reactions compare to the target substance.</li>
+                  <li>After each guess, you'll see how your guess substance's reactions compare to the target substance.</li>
                 </ul>
               </div>
               

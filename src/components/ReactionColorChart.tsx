@@ -1,4 +1,3 @@
-
 import React from "react";
 import { reagents, substances } from "@/data/testData";
 import { 
@@ -14,51 +13,60 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 const ReactionColorChart = () => {
   // Group reactions by colour for better visualization
   const getReactionClass = (reaction: string) => {
-    if (reaction === "No reaction") return "bg-gray-800 text-gray-400";
-    
-    // Handle multi-colour reactions with gradients
-    if (reaction.includes("/")) {
-      const colours = reaction.split("/");
-      
-      // Create a gradient class based on the colours
-      if (colours.length === 2) {
-        const firstColour = getColourClass(colours[0], true);
-        const secondColour = getColourClass(colours[1], true);
-        return `bg-gradient-to-r ${firstColour} ${secondColour} text-gray-100`;
-      }
+    if (reaction === "No reaction") {
+      return { backgroundColor: "#374151", color: "#d1d5db" }; // Default Gray
     }
-    
     return getColourClass(reaction);
   };
+
+  const getColourClass = (reaction: string) => {
+    // Split the reaction string by "→" and trim whitespace
+    const colors = reaction.split("→").map(color => color.trim());
   
-  // Helper function to get colour classes
-  const getColourClass = (reaction: string, forGradient: boolean = false) => {
-    const baseClass = forGradient ? "from-" : "bg-";
-    const textClass = forGradient ? "" : "text-";
-    
-    if (reaction.includes("Purple")) return `${baseClass}purple-800/40 ${textClass}purple-200`;
-    if (reaction.includes("Blue")) return `${baseClass}blue-800/40 ${textClass}blue-200`;
-    if (reaction.includes("Green")) return `${baseClass}green-800/40 ${textClass}green-200`;
-    if (reaction.includes("Yellow")) return `${baseClass}yellow-800/40 ${textClass}yellow-200`;
-    if (reaction.includes("Orange")) return `${baseClass}orange-800/40 ${textClass}orange-200`;
-    if (reaction.includes("Red")) return `${baseClass}red-800/40 ${textClass}red-200`;
-    if (reaction.includes("Brown")) return `${baseClass}amber-800/40 ${textClass}amber-200`;
-    if (reaction.includes("Black")) return `${baseClass}gray-900 ${textClass}gray-200`;
-    if (reaction.includes("White")) return `${baseClass}gray-200/20 ${textClass}gray-100`;
-    
-    return `${baseClass}gray-700/40 ${textClass}gray-200`;
+    // Map color names to their corresponding hex codes
+    const colorMap: { [key: string]: string } = {
+      Purple: "#6b21a8",
+      Blue: "#1e3a8a",
+      Green: "#166534",
+      Yellow: "#ca8a04",
+      Orange: "#ea580c",
+      Red: "#b91c1c",
+      Brown: "#78350f",
+      Black: "#111827",
+      White: "#f3f4f6",
+    };
+  
+    // Convert color names to hex codes
+    const hexColors = colors.map(color => colorMap[color]).filter(Boolean);
+  
+    if (hexColors.length === 0) {
+      // Default color for "No data" or unrecognized reactions
+      return { backgroundColor: "#374151", color: "#d1d5db" }; // Gray
+    }
+  
+    if (hexColors.length === 1) {
+      // Single color
+      return { backgroundColor: hexColors[0], color: "#ffffff" }; // White text
+    }
+  
+    // Multiple colors: Create a gradient
+    const gradient = `linear-gradient(to right, ${hexColors.join(", ")})`;
+    return { backgroundImage: gradient, color: "#ffffff" }; // White text
   };
 
   return (
     <div className="flex flex-col gap-3">
       <ScrollArea className="h-[250px]" orientation="both">
         <div className="min-w-[600px]">
-          <Table className="text-xs">
-            <TableHeader className="sticky top-0 bg-black/80 backdrop-blur-sm z-10">
-              <TableRow className="border-b border-gray-800">
-                <TableHead className="text-gray-400 w-24 bg-black/60">Substance</TableHead>
+          <Table className="text-xs shadow-lg rounded-lg overflow-hidden">
+                        <TableHeader className="sticky top-0 bg-gradient-to-r from-gray-800 to-black shadow-md z-10">
+              <TableRow className="border-b border-gray-700">
+                <TableHead className="text-gray-300 w-24 bg-black/60">Substance</TableHead>
                 {reagents.map(reagent => (
-                  <TableHead key={reagent.id} className="text-gray-400 px-1 text-center bg-black/60">
+                  <TableHead 
+                    key={reagent.id} 
+                    className="text-gray-300 px-2 text-center bg-black/60 w-[100px]" // Set a fixed width
+                  >
                     {reagent.name}
                   </TableHead>
                 ))}
@@ -66,16 +74,16 @@ const ReactionColorChart = () => {
             </TableHeader>
             <TableBody>
               {substances.map(substance => (
-                <TableRow key={substance.id} className="hover:bg-gray-900/50 border-b border-gray-800/50">
-                  <TableCell className="font-medium text-gray-200 bg-black/40 sticky left-0">{substance.name}</TableCell>
+                <TableRow key={substance.id} className="hover:bg-gray-800/50 border-b border-gray-700">
+                  <TableCell className="font-semibold text-gray-200 bg-black/40 sticky left-0 w-24">{substance.name}</TableCell>
                   {reagents.map(reagent => {
                     const reaction = substance.reactions[reagent.id] || "No data";
                     return (
-                      <TableCell 
-                        key={reagent.id} 
-                        className={`${getReactionClass(reaction)} text-center px-1 py-2 rounded-sm transition-colors border border-gray-800/20`}
+                      <TableCell
+                        key={reagent.id}
+                        style={getReactionClass(reaction)} // Apply dynamic styles
+                        className="text-center px-2 py-2 transition-transform transform hover:scale-105 border border-gray-700 w-[100px]"
                       >
-                        {reaction}
                       </TableCell>
                     );
                   })}
