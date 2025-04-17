@@ -238,9 +238,11 @@ const Drugle = () => {
             <img 
               src="https://tripsit.me/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.081b8d2e.png&w=3840&q=75" 
               alt="TripSit Logo" 
-              className="h-10 mr-4"
+              className="h-10 mr-6"
             />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+            <h1 
+              className="text-3xl font-bold bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent relative top-[-3px]"
+            >
               Drugle
             </h1>
           </div>
@@ -349,13 +351,13 @@ const Drugle = () => {
                     <p className="font-medium text-gray-200">How to Play Drugle:</p>
                     
                     <ul className="list-disc pl-5 space-y-1 text-left">
-                      <li>The game selects a random substance and uses all available reagent tests.</li>
+                      <li>The game selects a random substance for you to guess.</li>
                       <li>Your goal is to guess the substance in {MAX_ATTEMPTS} or fewer attempts.</li>
                       <li>After each guess, you'll see how your substance's reactions compare to the target substance.</li>
                     </ul>
                     
                     <div className="space-y-2">
-                      <p className="font-medium text-gray-200">Feedback Colours:</p>
+                      <p className="font-medium text-gray-200">Result Colours:</p>
                       <div className="flex flex-col items-start gap-2">
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 rounded-sm bg-green-500/80 border border-green-400"></div>
@@ -518,7 +520,7 @@ const Drugle = () => {
               <div className="space-y-2">
                 <h3 className="font-semibold text-gray-200">Rules:</h3>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>The game selects a random substance.</li>
+                  <li>The game selects a random substance for you to guess.</li>
                   <li>Your goal is to guess the substance in {MAX_ATTEMPTS} or fewer attempts.</li>
                   <li>After each guess, you'll see how your guess substance's reactions compare to the target substance.</li>
                 </ul>
