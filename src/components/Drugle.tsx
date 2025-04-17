@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,9 @@ import {
   ChevronUp,
   BrainCircuit,
   BookOpen,
-  AlertTriangle
+  AlertTriangle,
+  Copy,
+  Share2
 } from "lucide-react";
 import { reagents, substances } from "@/data/testData";
 import { Substance } from "@/types/reagent";
@@ -59,6 +61,10 @@ const Drugle = () => {
   const [showSubstanceSelect, setShowSubstanceSelect] = useState(false);
   const [showColourChart, setShowColourChart] = useState(false);
   const [animateGuess, setAnimateGuess] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  
+  // Animation refs
+  const reagentRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Initialize game
   useEffect(() => {
@@ -80,9 +86,9 @@ const Drugle = () => {
     setCurrentGuess("");
     setGameOver(false);
     setWon(false);
+    setShowResults(false);
     
     console.log("Target substance:", target.name);
-    console.log("Selected reagents:", selectedReagents);
   };
 
   const handleGuess = () => {
@@ -130,9 +136,8 @@ const Drugle = () => {
       results
     };
     
-    // Add animation
-    setAnimateGuess(true);
-    setTimeout(() => setAnimateGuess(false), 800);
+    // Add fill animation
+    triggerFillAnimation();
     
     setGuesses(prev => [...prev, newGuess]);
     setCurrentGuess("");
@@ -141,6 +146,7 @@ const Drugle = () => {
     if (guessedSubstance.id === targetSubstance.id) {
       setWon(true);
       setGameOver(true);
+      setShowResults(true);
       toast({
         title: "Congratulations!",
         description: `You identified the substance in ${guesses.length + 1} guesses!`,
@@ -150,12 +156,19 @@ const Drugle = () => {
     // Check if the player lost
     else if (guesses.length + 1 >= MAX_ATTEMPTS) {
       setGameOver(true);
+      setShowResults(true);
       toast({
         title: "Game Over",
         description: `The substance was ${targetSubstance.name}`,
         variant: "destructive",
       });
     }
+  };
+
+  const triggerFillAnimation = () => {
+    // Add animation class to reagent icons
+    setAnimateGuess(true);
+    setTimeout(() => setAnimateGuess(false), 800);
   };
 
   const handleSubstanceSelect = (substanceName: string) => {
@@ -184,27 +197,58 @@ const Drugle = () => {
     currentGuess ? s.name.toLowerCase().includes(currentGuess.toLowerCase()) : true
   );
 
+  // Generate result text for sharing
+  const generateResultText = () => {
+    if (!targetSubstance) return "";
+    
+    const resultEmojis = guesses.map(guess => {
+      const matches = guess.results.map(r => {
+        switch (r.match) {
+          case "exact": return "🟢";
+          case "present": return "🟡";
+          case "absent": return "⚫";
+        }
+      });
+      
+      return matches.join("");
+    });
+    
+    const attemptsText = won 
+      ? `I solved today's Drugle in ${guesses.length}/${MAX_ATTEMPTS} attempts!` 
+      : `I failed today's Drugle. The substance was ${targetSubstance.name}.`;
+    
+    return `Drugle ${new Date().toLocaleDateString('en-AU')}\n${attemptsText}\n\n${resultEmojis.join("\n")}`;
+  };
+  
+  // Copy results to clipboard
+  const copyResults = () => {
+    navigator.clipboard.writeText(generateResultText());
+    toast({
+      title: "Copied to clipboard",
+      description: "Results copied to your clipboard!",
+      variant: "default",
+    });
+  };
+
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 via-purple-900 to-gray-900 text-gray-200 overflow-x-hidden flex flex-col">
       <div className="container mx-auto px-4 pt-4 pb-20 max-w-4xl flex flex-col flex-grow">
         <header className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center">
-              <img 
-                src="https://tripsit.me/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.081b8d2e.png&w=3840&q=75" 
-                alt="TripSit Logo" 
-                className="h-10 mr-4"
-              />
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent flex items-center">
-                Drugle
-              </h1>
-            </div>
+          <div className="flex items-center">
+            <img 
+              src="https://tripsit.me/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.081b8d2e.png&w=3840&q=75" 
+              alt="TripSit Logo" 
+              className="h-10 mr-4"
+            />
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+              Drugle
+            </h1>
           </div>
           <div className="flex gap-2">
             <Button 
-              variant="outline" 
+              variant="default" 
               size="sm" 
-              className={`gap-2 transition-all hover:scale-105 ${showColourChart ? 'bg-purple-800/40 border-purple-600' : 'bg-black/40 border-gray-700'} text-gray-200`}
+              className={`gap-2 transition-all hover:scale-105 ${showColourChart ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'bg-gradient-to-r from-blue-600 to-purple-600 opacity-90'}`}
               onClick={() => setShowColourChart(!showColourChart)}
             >
               <BookOpen className="h-4 w-4" />
@@ -215,9 +259,9 @@ const Drugle = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button 
-                    variant="outline" 
+                    variant="default" 
                     size="sm" 
-                    className="gap-2 transition-all hover:scale-105 bg-black/40 text-gray-200 border-gray-700"
+                    className="gap-2 transition-all hover:scale-105 bg-gradient-to-r from-blue-600 to-purple-600 opacity-90"
                     onClick={() => setShowHelp(true)}
                   >
                     <HelpCircle className="h-4 w-4" />
@@ -232,9 +276,9 @@ const Drugle = () => {
             
             <Button 
               onClick={startNewGame} 
-              variant="outline" 
+              variant="default" 
               size="sm" 
-              className="gap-2 transition-all hover:scale-105 bg-black/40 text-gray-200 border-gray-700"
+              className="gap-2 transition-all hover:scale-105 bg-gradient-to-r from-blue-600 to-purple-600 opacity-90"
             >
               <RefreshCw className="h-4 w-4" />
               <span className="hidden sm:inline">New Game</span>
@@ -266,8 +310,8 @@ const Drugle = () => {
         <div className="flex-grow">
           <Card className="p-4 bg-black/40 backdrop-blur-xl border-gray-800 animate-fade-in mb-6">
             <div className="mb-4">
-              <div className="flex flex-wrap justify-center gap-6 mb-4">
-                {availableReagents.map(reagentId => {
+              <div className="flex flex-wrap justify-center gap-8 mb-4">
+                {availableReagents.map((reagentId, index) => {
                   const reagent = reagents.find(r => r.id === reagentId);
                   const result = latestGuess?.results.find(r => r.reagentId === reagentId);
                   const matchStyle = result ? getMatchColor(result.match) : "";
@@ -277,7 +321,10 @@ const Drugle = () => {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${animateGuess ? 'animate-bounce' : 'hover:scale-110'} ${latestGuess ? matchStyle : 'bg-purple-900/40 border-purple-800 hover:bg-purple-800/40'}`}>
+                            <div 
+                              ref={el => reagentRefs.current[index] = el}
+                              className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${animateGuess ? 'animate-scale-in' : 'hover:scale-110'} ${latestGuess ? matchStyle : 'bg-purple-900/40 border-purple-800 hover:bg-purple-800/40'}`}
+                            >
                               <BeakerIcon className="h-5 w-5 text-purple-200" />
                             </div>
                           </TooltipTrigger>
@@ -287,7 +334,7 @@ const Drugle = () => {
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                      <span className="text-xs mt-1 text-gray-300">{reagent?.name}</span>
+                      <span className="text-xs mt-1 text-gray-300 text-center">{reagent?.name}</span>
                     </div>
                   );
                 })}
@@ -298,18 +345,39 @@ const Drugle = () => {
               {guesses.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-[200px] opacity-80">
                   <BrainCircuit className="h-12 w-12 text-purple-400 mb-2 animate-pulse" />
-                  <p className="text-gray-400 text-center max-w-md mx-auto">
-                    Guess a substance to see how it reacts with the test reagents. Green means exact match, yellow means both react differently, and grey means different reaction pattern.
-                  </p>
-                  <p className="text-gray-500 text-center text-sm mt-2">
-                    Click the Help button for more information.
-                  </p>
+                  <div className="text-sm text-gray-300 text-center max-w-md mx-auto space-y-4">
+                    <p className="font-medium text-gray-200">How to Play Drugle:</p>
+                    
+                    <ul className="list-disc pl-5 space-y-1 text-left">
+                      <li>The game selects a random substance and uses all available reagent tests.</li>
+                      <li>Your goal is to guess the substance in {MAX_ATTEMPTS} or fewer attempts.</li>
+                      <li>After each guess, you'll see how your substance's reactions compare to the target substance.</li>
+                    </ul>
+                    
+                    <div className="space-y-2">
+                      <p className="font-medium text-gray-200">Feedback Colours:</p>
+                      <div className="flex flex-col items-start gap-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 rounded-sm bg-green-500/80 border border-green-400"></div>
+                          <span>Green: Exact match - the reaction is identical</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 rounded-sm bg-yellow-500/80 border border-yellow-400"></div>
+                          <span>Yellow: Similar - both substances react, but with different colours</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 rounded-sm bg-gray-700/80 border border-gray-600"></div>
+                          <span>Grey: Different - one substance reacts while the other doesn't</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div>
                   <div className="flex justify-between mb-2">
                     <h3 className="text-sm font-medium text-gray-400">Previous Guesses</h3>
-                    <div className="text-sm font-medium px-2 py-1 rounded-md bg-purple-900/40 border border-purple-800 text-gray-300">
+                    <div className="text-sm font-medium px-2 py-1 rounded-md bg-gradient-to-r from-blue-600/40 to-purple-600/40 border border-purple-500/30 text-gray-300">
                       Attempt {guesses.length}/{MAX_ATTEMPTS}
                     </div>
                   </div>
@@ -402,7 +470,7 @@ const Drugle = () => {
                 </Button>
               </div>
               
-              {gameOver && (
+              {gameOver && !showResults && (
                 <div className={`mt-3 p-2 rounded-md text-center ${won ? "bg-green-900/40 border border-green-800" : "bg-red-900/40 border border-red-800"}`}>
                   {won ? "You won!" : `The correct substance was ${targetSubstance?.name}`}
                 </div>
@@ -474,8 +542,55 @@ const Drugle = () => {
           </div>
         </DialogContent>
       </Dialog>
+      
+      {/* Results dialog */}
+      <Dialog open={showResults} onOpenChange={setShowResults}>
+        <DialogContent className="bg-black/95 border-gray-800 text-gray-200 max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+              {won ? "Congratulations!" : "Game Over"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-center text-gray-300">
+              {won 
+                ? `You identified the substance in ${guesses.length}/${MAX_ATTEMPTS} attempts!` 
+                : `The substance was ${targetSubstance?.name}`
+              }
+            </p>
+            
+            <div className="bg-gray-900/60 p-4 rounded-md border border-gray-800">
+              <div className="text-sm font-mono whitespace-pre-line mb-4">
+                {generateResultText()}
+              </div>
+            </div>
+            
+            <div className="flex gap-3 justify-center">
+              <Button 
+                onClick={copyResults}
+                className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              >
+                <Copy className="h-4 w-4" />
+                Copy Results
+              </Button>
+              
+              <Button 
+                onClick={() => {
+                  startNewGame();
+                  setShowResults(false);
+                }}
+                className="gap-2 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Play Again
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
 export default Drugle;
+

@@ -51,14 +51,14 @@ const ReactionColorChart = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      <ScrollArea className="h-[250px]">
-        <div className="overflow-x-auto">
+      <ScrollArea className="h-[250px]" orientation="both">
+        <div className="min-w-[600px]">
           <Table className="text-xs">
             <TableHeader className="sticky top-0 bg-black/80 backdrop-blur-sm z-10">
-              <TableRow>
-                <TableHead className="text-gray-400 w-24">Substance</TableHead>
+              <TableRow className="border-b border-gray-800">
+                <TableHead className="text-gray-400 w-24 bg-black/60">Substance</TableHead>
                 {reagents.map(reagent => (
-                  <TableHead key={reagent.id} className="text-gray-400 px-1">
+                  <TableHead key={reagent.id} className="text-gray-400 px-1 text-center bg-black/60">
                     {reagent.name}
                   </TableHead>
                 ))}
@@ -66,14 +66,14 @@ const ReactionColorChart = () => {
             </TableHeader>
             <TableBody>
               {substances.map(substance => (
-                <TableRow key={substance.id} className="hover:bg-gray-900/50">
-                  <TableCell className="font-medium text-gray-200">{substance.name}</TableCell>
+                <TableRow key={substance.id} className="hover:bg-gray-900/50 border-b border-gray-800/50">
+                  <TableCell className="font-medium text-gray-200 bg-black/40 sticky left-0">{substance.name}</TableCell>
                   {reagents.map(reagent => {
                     const reaction = substance.reactions[reagent.id] || "No data";
                     return (
                       <TableCell 
                         key={reagent.id} 
-                        className={`${getReactionClass(reaction)} text-center px-1 py-2 rounded-sm transition-colors`}
+                        className={`${getReactionClass(reaction)} text-center px-1 py-2 rounded-sm transition-colors border border-gray-800/20`}
                       >
                         {reaction}
                       </TableCell>
