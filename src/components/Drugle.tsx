@@ -503,6 +503,10 @@ const Drugle = () => {
               </a>
             </span>
           </p>
+          {/* Add the new footer text here */}
+          <div className="mt-4 text-center text-sm text-gray-500">
+            Made with <span className="text-red-500">💖</span> by <span className="font-semibold">Hipperooni 🐧</span>
+          </div>
         </div>
       </footer>
 
