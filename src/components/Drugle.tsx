@@ -12,7 +12,8 @@ import {
   HelpCircle, 
   ChevronDown,
   ChevronUp,
-  BrainCircuit
+  BrainCircuit,
+  BookOpen
 } from "lucide-react";
 import { reagents, substances } from "@/data/testData";
 import { Substance } from "@/types/reagent";
@@ -26,18 +27,20 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ReactionColorChart from "./ReactionColorChart";
 
 type GuessResult = {
   substance: Substance;
@@ -72,9 +75,8 @@ const Drugle = () => {
     const target = substances[randomIndex];
     setTargetSubstance(target);
 
-    // Select 5 random reagents for this game
-    const shuffledReagents = [...reagents].sort(() => 0.5 - Math.random());
-    const selectedReagents = shuffledReagents.slice(0, 5).map(r => r.id);
+    // Use all reagents for the game
+    const selectedReagents = reagents.map(r => r.id);
     setAvailableReagents(selectedReagents);
     
     // Reset game state
@@ -178,7 +180,7 @@ const Drugle = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl min-h-screen flex flex-col">
+    <div className="container mx-auto p-4 max-w-4xl min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-purple-900 to-gray-900">
       <div className="flex flex-col gap-6 flex-grow">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-4">
@@ -188,11 +190,42 @@ const Drugle = () => {
                 Back to Simulator
               </Button>
             </Link>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
-              Drugle
-            </h1>
+            <div className="flex items-center">
+              <img 
+                src="https://tripsit.me/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.081b8d2e.png&w=3840&q=75" 
+                alt="TripSit Logo" 
+                className="h-10 mr-4 animate-pulse"
+              />
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+                Drugle
+              </h1>
+            </div>
           </div>
           <div className="flex gap-2">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2 transition-all hover:scale-105 bg-black/40 text-gray-200 border-gray-700"
+                >
+                  <BookOpen className="h-4 w-4" />
+                  <span className="hidden sm:inline">Color Chart</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-[90%] sm:w-[540px] bg-black/95 border-gray-800 text-gray-200">
+                <SheetHeader>
+                  <SheetTitle className="text-xl bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Reagent Color Chart</SheetTitle>
+                  <SheetDescription className="text-gray-400">
+                    Reference color reactions for different substances
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="mt-4">
+                  <ReactionColorChart />
+                </div>
+              </SheetContent>
+            </Sheet>
+            
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -224,38 +257,36 @@ const Drugle = () => {
           </div>
         </div>
 
-        <Card className="p-4 bg-black/40 backdrop-blur-xl border-gray-800 flex-grow">
+        <Card className="p-4 bg-black/40 backdrop-blur-xl border-gray-800 flex-grow animate-fade-in">
           <div className="flex flex-col h-full">
-            <div className="mb-4 flex justify-center">
-              <div className="flex gap-3">
-                {availableReagents.map(reagentId => {
-                  const reagent = reagents.find(r => r.id === reagentId);
-                  return (
-                    <div key={reagentId} className="flex flex-col items-center">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <div className="w-12 h-12 rounded-full bg-purple-900/40 flex items-center justify-center border border-purple-800 transition-all hover:bg-purple-800/40">
-                              <BeakerIcon className="h-6 w-6 text-purple-200" />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-black/90 border-gray-700 text-gray-200">
-                            <p>{reagent?.name} Reagent</p>
-                            <p className="text-xs text-gray-400">{reagent?.description}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      <span className="text-xs mt-1 text-gray-300">{reagent?.name}</span>
-                    </div>
-                  );
-                })}
-              </div>
+            <div className="mb-4 flex flex-wrap justify-center gap-3">
+              {availableReagents.map(reagentId => {
+                const reagent = reagents.find(r => r.id === reagentId);
+                return (
+                  <div key={reagentId} className="flex flex-col items-center">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <div className="w-9 h-9 rounded-full bg-purple-900/40 flex items-center justify-center border border-purple-800 transition-all hover:bg-purple-800/40 hover:scale-110">
+                            <BeakerIcon className="h-5 w-5 text-purple-200" />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-black/90 border-gray-700 text-gray-200">
+                          <p>{reagent?.name} Reagent</p>
+                          <p className="text-xs text-gray-400">{reagent?.description}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <span className="text-xs mt-1 text-gray-300">{reagent?.name}</span>
+                  </div>
+                );
+              })}
             </div>
             
             <ScrollArea className="flex-grow mb-4 rounded-md border border-gray-800 p-4 bg-black/60 max-h-[400px]">
               {guesses.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full opacity-80">
-                  <BrainCircuit className="h-12 w-12 text-purple-400 mb-2" />
+                  <BrainCircuit className="h-12 w-12 text-purple-400 mb-2 animate-pulse" />
                   <p className="text-gray-400 text-center">
                     Guess a substance to see how it reacts with the test reagents.
                     <br />
@@ -267,7 +298,7 @@ const Drugle = () => {
                   {guesses.map((guess, index) => (
                     <div key={index} className="p-3 rounded-md bg-gray-900/50 border border-gray-800 animate-fade-in">
                       <div className="mb-2 font-medium text-gray-200">{guess.substance.name}</div>
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         {guess.results.map((result, i) => {
                           const reagent = reagents.find(r => r.id === result.reagentId);
                           return (
@@ -275,9 +306,9 @@ const Drugle = () => {
                               <Tooltip>
                                 <TooltipTrigger>
                                   <div 
-                                    className={`w-10 h-10 rounded-md flex items-center justify-center border ${getMatchColor(result.match)} transition-all hover:scale-105`}
+                                    className={`w-8 h-8 rounded-md flex items-center justify-center border ${getMatchColor(result.match)} transition-all hover:scale-105`}
                                   >
-                                    <BeakerIcon className="h-5 w-5 text-white/90" />
+                                    <BeakerIcon className="h-4 w-4 text-white/90" />
                                   </div>
                                 </TooltipTrigger>
                                 <TooltipContent className="bg-black/90 border-gray-700 text-gray-200">
@@ -377,7 +408,7 @@ const Drugle = () => {
               <div className="space-y-2">
                 <h3 className="font-semibold text-gray-200">Rules:</h3>
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>The game selects a random substance and 5 reagent tests.</li>
+                  <li>The game selects a random substance and uses all available reagent tests.</li>
                   <li>Your goal is to guess the substance in {MAX_ATTEMPTS} or fewer attempts.</li>
                   <li>After each guess, you'll see how your substance's reactions compare to the target substance.</li>
                 </ul>
@@ -403,6 +434,10 @@ const Drugle = () => {
               
               <p>
                 Use your chemistry knowledge and deduction skills to identify the mystery substance!
+              </p>
+              
+              <p>
+                Check the Color Chart button to see how different substances react with various reagents.
               </p>
             </div>
           </DialogDescription>
