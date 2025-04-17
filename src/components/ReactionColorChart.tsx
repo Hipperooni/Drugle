@@ -38,7 +38,7 @@ const ReactionColorChart = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <div className="relative">
         <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
         <Input
@@ -49,37 +49,39 @@ const ReactionColorChart = () => {
         />
       </div>
       
-      <ScrollArea className="h-[60vh]">
-        <Table className="text-xs">
-          <TableHeader className="sticky top-0 bg-black/80 backdrop-blur-sm z-10">
-            <TableRow>
-              <TableHead className="text-gray-400 w-24">Substance</TableHead>
-              {reagents.map(reagent => (
-                <TableHead key={reagent.id} className="text-gray-400">
-                  {reagent.name}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredSubstances.map(substance => (
-              <TableRow key={substance.id} className="hover:bg-gray-900/50">
-                <TableCell className="font-medium text-gray-200">{substance.name}</TableCell>
-                {reagents.map(reagent => {
-                  const reaction = substance.reactions[reagent.id] || "No data";
-                  return (
-                    <TableCell 
-                      key={reagent.id} 
-                      className={`${getReactionClass(reaction)} text-center px-1 py-2 rounded-sm transition-colors`}
-                    >
-                      {reaction}
-                    </TableCell>
-                  );
-                })}
+      <ScrollArea className="h-[250px]">
+        <div className="overflow-x-auto">
+          <Table className="text-xs">
+            <TableHeader className="sticky top-0 bg-black/80 backdrop-blur-sm z-10">
+              <TableRow>
+                <TableHead className="text-gray-400 w-24">Substance</TableHead>
+                {reagents.map(reagent => (
+                  <TableHead key={reagent.id} className="text-gray-400 px-1">
+                    {reagent.name}
+                  </TableHead>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filteredSubstances.map(substance => (
+                <TableRow key={substance.id} className="hover:bg-gray-900/50">
+                  <TableCell className="font-medium text-gray-200">{substance.name}</TableCell>
+                  {reagents.map(reagent => {
+                    const reaction = substance.reactions[reagent.id] || "No data";
+                    return (
+                      <TableCell 
+                        key={reagent.id} 
+                        className={`${getReactionClass(reaction)} text-center px-1 py-2 rounded-sm transition-colors`}
+                      >
+                        {reaction}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </ScrollArea>
     </div>
   );
