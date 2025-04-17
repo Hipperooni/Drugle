@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -6,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { BeakerIcon, RefreshCw, CheckCircle, XCircle, Shuffle, PaletteIcon } from "lucide-react";
 import { reagents, substances } from "@/data/testData";
 import { Substance } from "@/types/reagent";
+import { Link } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -45,7 +47,7 @@ const ReagentSimulator = () => {
           similarReactions++;
         }
       });
-      return similarReactions >= 1;
+      return similarReactions >= 1; // Changed from 2 to 1
     });
   };
 
@@ -145,13 +147,21 @@ const ReagentSimulator = () => {
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-              Reagent Test Kit Simulator
-            </h1>
+            <div className="flex gap-4 items-center">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+                Reagent Test Kit Simulator
+              </h1>
+              <Link to="/drugle">
+                <Button variant="outline" size="sm" className="gap-2 transition-all hover:scale-105 bg-gradient-to-r from-purple-600/30 to-pink-600/30 hover:from-purple-600/50 hover:to-pink-600/50 border-purple-500/50">
+                  <BeakerIcon className="h-4 w-4" />
+                  Play Drugle
+                </Button>
+              </Link>
+            </div>
             <div className="flex gap-2">
               <Dialog open={showColorChart} onOpenChange={setShowColorChart}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="gap-2 transition-all hover:scale-105">
+                  <Button variant="outline" className="gap-2 transition-all hover:scale-105 bg-black/40 text-gray-200 border-gray-700">
                     <PaletteIcon className="h-4 w-4" />
                     Color Chart
                   </Button>
@@ -169,7 +179,7 @@ const ReagentSimulator = () => {
                   </div>
                 </DialogContent>
               </Dialog>
-              <Button onClick={randomizeSubstance} variant="outline" className="gap-2 transition-all hover:scale-105">
+              <Button onClick={randomizeSubstance} variant="outline" className="gap-2 transition-all hover:scale-105 bg-black/40 text-gray-200 border-gray-700">
                 <RefreshCw className="h-4 w-4" />
                 New Sample
               </Button>
@@ -182,19 +192,19 @@ const ReagentSimulator = () => {
                 value={currentSubstance?.id || ""}
                 onValueChange={handleSubstanceSelect}
               >
-                <SelectTrigger className="w-[200px] bg-black/60">
-                  <SelectValue placeholder="Select substance to test" />
+                <SelectTrigger className="w-[200px] bg-black/60 text-gray-200 border-gray-700">
+                  <SelectValue placeholder="Select substance to test" className="text-gray-300" />
                 </SelectTrigger>
-                <SelectContent className="bg-black/95 border-gray-800">
+                <SelectContent className="bg-black/95 border-gray-800 text-gray-200">
                   {substances.map((substance) => (
-                    <SelectItem key={substance.id} value={substance.id}>
+                    <SelectItem key={substance.id} value={substance.id} className="text-gray-200 focus:bg-purple-900/30 focus:text-white">
                       {substance.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               
-              <Button onClick={randomizeSubstance} variant="outline" className="gap-2 transition-all hover:scale-105">
+              <Button onClick={randomizeSubstance} variant="outline" className="gap-2 transition-all hover:scale-105 bg-black/40 text-gray-200 border-gray-700">
                 <Shuffle className="h-4 w-4" />
                 Random Sample
               </Button>
@@ -219,7 +229,7 @@ const ReagentSimulator = () => {
                   className={`gap-2 transition-all hover:scale-105 ${
                     selectedReagents.includes(reagent.id)
                       ? "bg-purple-600 hover:bg-purple-700"
-                      : "hover:bg-purple-600/20"
+                      : "bg-black/40 text-gray-200 border-gray-700 hover:bg-purple-600/20"
                   }`}
                   onClick={() => toggleReagent(reagent.id)}
                   title={reagent.description}
@@ -259,7 +269,7 @@ const ReagentSimulator = () => {
                 className={`gap-2 transition-all hover:scale-105 ${
                   userGuess === substance.id
                     ? "bg-purple-600 hover:bg-purple-700"
-                    : "hover:bg-purple-600/20"
+                    : "bg-black/40 text-gray-200 border-gray-700 hover:bg-purple-600/20"
                 }`}
               >
                 {userGuess === substance.id && showResults && (
