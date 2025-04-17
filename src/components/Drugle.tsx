@@ -8,7 +8,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { 
   BeakerIcon, 
   RefreshCw, 
-  ArrowLeftCircle, 
   HelpCircle, 
   ChevronDown,
   ChevronUp,
@@ -18,7 +17,6 @@ import {
 } from "lucide-react";
 import { reagents, substances } from "@/data/testData";
 import { Substance } from "@/types/reagent";
-import { Link } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -38,7 +36,6 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import ReactionColorChart from "./ReactionColorChart";
-import { Checkbox } from "@/components/ui/checkbox";
 
 type GuessResult = {
   substance: Substance;
@@ -60,7 +57,8 @@ const Drugle = () => {
   const [won, setWon] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [showSubstanceSelect, setShowSubstanceSelect] = useState(false);
-  const [showColorChart, setShowColorChart] = useState(false);
+  const [showColourChart, setShowColourChart] = useState(false);
+  const [animateGuess, setAnimateGuess] = useState(false);
 
   // Initialize game
   useEffect(() => {
@@ -132,6 +130,10 @@ const Drugle = () => {
       results
     };
     
+    // Add animation
+    setAnimateGuess(true);
+    setTimeout(() => setAnimateGuess(false), 800);
+    
     setGuesses(prev => [...prev, newGuess]);
     setCurrentGuess("");
     
@@ -176,18 +178,17 @@ const Drugle = () => {
 
   // Get the latest guess for displaying on reagent icons
   const latestGuess = guesses.length > 0 ? guesses[guesses.length - 1] : null;
+  
+  // Filter substances based on current input for autocomplete
+  const filteredSubstances = substances.filter(s => 
+    currentGuess ? s.name.toLowerCase().includes(currentGuess.toLowerCase()) : true
+  );
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-gray-900 via-purple-900 to-gray-900 text-gray-200 overflow-x-hidden flex flex-col">
       <div className="container mx-auto px-4 pt-4 pb-20 max-w-4xl flex flex-col flex-grow">
         <header className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">
-            <Link to="/">
-              <Button variant="outline" size="sm" className="gap-2 transition-all hover:scale-105 bg-black/40 text-gray-200 border-gray-700">
-                <ArrowLeftCircle className="h-4 w-4" />
-                Back
-              </Button>
-            </Link>
             <div className="flex items-center">
               <img 
                 src="https://tripsit.me/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo.081b8d2e.png&w=3840&q=75" 
@@ -203,11 +204,11 @@ const Drugle = () => {
             <Button 
               variant="outline" 
               size="sm" 
-              className={`gap-2 transition-all hover:scale-105 ${showColorChart ? 'bg-purple-800/40 border-purple-600' : 'bg-black/40 border-gray-700'} text-gray-200`}
-              onClick={() => setShowColorChart(!showColorChart)}
+              className={`gap-2 transition-all hover:scale-105 ${showColourChart ? 'bg-purple-800/40 border-purple-600' : 'bg-black/40 border-gray-700'} text-gray-200`}
+              onClick={() => setShowColourChart(!showColourChart)}
             >
               <BookOpen className="h-4 w-4" />
-              <span className="hidden sm:inline">Color Chart</span>
+              <span className="hidden sm:inline">Colour Chart</span>
             </Button>
             
             <TooltipProvider>
@@ -241,16 +242,16 @@ const Drugle = () => {
           </div>
         </header>
 
-        {showColorChart && (
+        {showColourChart && (
           <Card className="mb-6 p-4 bg-black/40 backdrop-blur-xl border-gray-800 animate-fade-in">
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-lg font-semibold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Reagent Color Chart
+                Reagent Colour Chart
               </h2>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setShowColorChart(false)}
+                onClick={() => setShowColourChart(false)}
                 className="h-8 w-8 p-0 rounded-full"
               >
                 <ChevronUp className="h-4 w-4" />
@@ -265,7 +266,7 @@ const Drugle = () => {
         <div className="flex-grow">
           <Card className="p-4 bg-black/40 backdrop-blur-xl border-gray-800 animate-fade-in mb-6">
             <div className="mb-4">
-              <div className="flex flex-wrap justify-center gap-3 mb-2">
+              <div className="flex flex-wrap justify-center gap-6 mb-4">
                 {availableReagents.map(reagentId => {
                   const reagent = reagents.find(r => r.id === reagentId);
                   const result = latestGuess?.results.find(r => r.reagentId === reagentId);
@@ -276,7 +277,7 @@ const Drugle = () => {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger>
-                            <div className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all hover:scale-110 ${latestGuess ? matchStyle : 'bg-purple-900/40 border-purple-800 hover:bg-purple-800/40'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center border transition-all ${animateGuess ? 'animate-bounce' : 'hover:scale-110'} ${latestGuess ? matchStyle : 'bg-purple-900/40 border-purple-800 hover:bg-purple-800/40'}`}>
                               <BeakerIcon className="h-5 w-5 text-purple-200" />
                             </div>
                           </TooltipTrigger>
@@ -291,29 +292,17 @@ const Drugle = () => {
                   );
                 })}
               </div>
-              
-              <div className="flex items-center justify-center gap-2 mt-1">
-                <div className="flex items-center gap-1">
-                  <div className="w-4 h-4 bg-green-500/80 border border-green-400 rounded-sm"></div>
-                  <span className="text-xs text-gray-300">Exact</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-4 h-4 bg-yellow-500/80 border border-yellow-400 rounded-sm"></div>
-                  <span className="text-xs text-gray-300">Similar</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-4 h-4 bg-gray-700/80 border border-gray-600 rounded-sm"></div>
-                  <span className="text-xs text-gray-300">Different</span>
-                </div>
-              </div>
             </div>
             
             <ScrollArea className="rounded-md border border-gray-800 p-4 bg-black/60 max-h-[350px]">
               {guesses.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-[200px] opacity-80">
                   <BrainCircuit className="h-12 w-12 text-purple-400 mb-2 animate-pulse" />
-                  <p className="text-gray-400 text-center">
-                    Guess a substance to see how it reacts with the test reagents.
+                  <p className="text-gray-400 text-center max-w-md mx-auto">
+                    Guess a substance to see how it reacts with the test reagents. Green means exact match, yellow means both react differently, and grey means different reaction pattern.
+                  </p>
+                  <p className="text-gray-500 text-center text-sm mt-2">
+                    Click the Help button for more information.
                   </p>
                 </div>
               ) : (
@@ -326,7 +315,10 @@ const Drugle = () => {
                   </div>
                   <div className="space-y-3">
                     {guesses.map((guess, index) => (
-                      <div key={index} className="p-3 rounded-md bg-gray-900/50 border border-gray-800 animate-fade-in">
+                      <div 
+                        key={index} 
+                        className={`p-3 rounded-md bg-gray-900/50 border border-gray-800 ${index === guesses.length - 1 && animateGuess ? 'animate-scale-in' : 'animate-fade-in'}`}
+                      >
                         <div className="mb-2 font-medium text-gray-200">{guess.substance.name}</div>
                         <div className="flex flex-wrap gap-2">
                           {guess.results.map((result, i) => {
@@ -347,7 +339,7 @@ const Drugle = () => {
                                       {result.match === "exact" 
                                         ? "Exact match" 
                                         : result.match === "present" 
-                                          ? "Both react (different colors)" 
+                                          ? "Both react (different colours)" 
                                           : "Different reaction pattern"
                                       }
                                     </p>
@@ -373,6 +365,7 @@ const Drugle = () => {
                     value={currentGuess}
                     onChange={(e) => setCurrentGuess(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && handleGuess()}
+                    onFocus={() => setShowSubstanceSelect(true)}
                     disabled={gameOver}
                   />
                   <button
@@ -388,7 +381,7 @@ const Drugle = () => {
                   
                   {showSubstanceSelect && (
                     <div className="absolute top-full left-0 right-0 mt-1 bg-black/95 border border-gray-700 rounded-md z-10 shadow-lg max-h-48 overflow-y-auto text-gray-200">
-                      {substances.map((substance) => (
+                      {filteredSubstances.map((substance) => (
                         <div
                           key={substance.id}
                           className="px-3 py-2 hover:bg-purple-900/30 cursor-pointer text-gray-200"
@@ -426,7 +419,7 @@ const Drugle = () => {
             <h3 className="font-semibold">Disclaimer</h3>
           </div>
           <p className="text-sm text-gray-400">
-            THIS IS FOR ENTERTAINMENT PURPOSES ONLY. THE COLOR CHART MAY NOT BE ACCURATE OR UP TO DATE 
+            THIS IS FOR ENTERTAINMENT PURPOSES ONLY. THE COLOUR CHART MAY NOT BE ACCURATE OR UP TO DATE 
             AND NOTHING ON THIS PAGE SHOULD BE USED AS A FACTUAL REFERENCE FOR SUBSTANCE IDENTIFICATION.
           </p>
         </div>
@@ -453,7 +446,7 @@ const Drugle = () => {
               </div>
               
               <div className="space-y-2">
-                <h3 className="font-semibold text-gray-200">Feedback Colors:</h3>
+                <h3 className="font-semibold text-gray-200">Feedback Colours:</h3>
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-md bg-green-500/80 border border-green-400"></div>
@@ -461,11 +454,11 @@ const Drugle = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-md bg-yellow-500/80 border border-yellow-400"></div>
-                    <span>Yellow: Similar - both substances react, but with different colors</span>
+                    <span>Yellow: Similar - both substances react, but with different colours</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-md bg-gray-700/80 border border-gray-600"></div>
-                    <span>Gray: Different - one substance reacts while the other doesn't (or vice versa)</span>
+                    <span>Grey: Different - one substance reacts while the other doesn't (or vice versa)</span>
                   </div>
                 </div>
               </div>
@@ -475,7 +468,7 @@ const Drugle = () => {
               </p>
               
               <p>
-                Check the Color Chart button to see how different substances react with various reagents.
+                Check the Colour Chart button to see how different substances react with various reagents.
               </p>
             </div>
           </div>

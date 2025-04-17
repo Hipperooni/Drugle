@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { reagents, substances } from "@/data/testData";
 import { 
   Table, 
@@ -9,46 +9,48 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search } from "lucide-react";
 
 const ReactionColorChart = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  
-  const filteredSubstances = substances.filter(substance => 
-    substance.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Group reactions by color for better visualization
+  // Group reactions by colour for better visualization
   const getReactionClass = (reaction: string) => {
     if (reaction === "No reaction") return "bg-gray-800 text-gray-400";
     
-    if (reaction.includes("Purple")) return "bg-purple-800/40 text-purple-200";
-    if (reaction.includes("Blue")) return "bg-blue-800/40 text-blue-200";
-    if (reaction.includes("Green")) return "bg-green-800/40 text-green-200";
-    if (reaction.includes("Yellow")) return "bg-yellow-800/40 text-yellow-200";
-    if (reaction.includes("Orange")) return "bg-orange-800/40 text-orange-200";
-    if (reaction.includes("Red")) return "bg-red-800/40 text-red-200";
-    if (reaction.includes("Brown")) return "bg-amber-800/40 text-amber-200";
-    if (reaction.includes("Black")) return "bg-gray-900 text-gray-200";
-    if (reaction.includes("White")) return "bg-gray-200/20 text-gray-100";
+    // Handle multi-colour reactions with gradients
+    if (reaction.includes("/")) {
+      const colours = reaction.split("/");
+      
+      // Create a gradient class based on the colours
+      if (colours.length === 2) {
+        const firstColour = getColourClass(colours[0], true);
+        const secondColour = getColourClass(colours[1], true);
+        return `bg-gradient-to-r ${firstColour} ${secondColour} text-gray-100`;
+      }
+    }
     
-    return "bg-gray-700/40 text-gray-200";
+    return getColourClass(reaction);
+  };
+  
+  // Helper function to get colour classes
+  const getColourClass = (reaction: string, forGradient: boolean = false) => {
+    const baseClass = forGradient ? "from-" : "bg-";
+    const textClass = forGradient ? "" : "text-";
+    
+    if (reaction.includes("Purple")) return `${baseClass}purple-800/40 ${textClass}purple-200`;
+    if (reaction.includes("Blue")) return `${baseClass}blue-800/40 ${textClass}blue-200`;
+    if (reaction.includes("Green")) return `${baseClass}green-800/40 ${textClass}green-200`;
+    if (reaction.includes("Yellow")) return `${baseClass}yellow-800/40 ${textClass}yellow-200`;
+    if (reaction.includes("Orange")) return `${baseClass}orange-800/40 ${textClass}orange-200`;
+    if (reaction.includes("Red")) return `${baseClass}red-800/40 ${textClass}red-200`;
+    if (reaction.includes("Brown")) return `${baseClass}amber-800/40 ${textClass}amber-200`;
+    if (reaction.includes("Black")) return `${baseClass}gray-900 ${textClass}gray-200`;
+    if (reaction.includes("White")) return `${baseClass}gray-200/20 ${textClass}gray-100`;
+    
+    return `${baseClass}gray-700/40 ${textClass}gray-200`;
   };
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="relative">
-        <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-400" />
-        <Input
-          placeholder="Search substances..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-8 bg-black/60 border-gray-700 text-gray-200"
-        />
-      </div>
-      
       <ScrollArea className="h-[250px]">
         <div className="overflow-x-auto">
           <Table className="text-xs">
@@ -63,7 +65,7 @@ const ReactionColorChart = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredSubstances.map(substance => (
+              {substances.map(substance => (
                 <TableRow key={substance.id} className="hover:bg-gray-900/50">
                   <TableCell className="font-medium text-gray-200">{substance.name}</TableCell>
                   {reagents.map(reagent => {
